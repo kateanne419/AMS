@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1093834300985",
+    "firebase_url": "https://nemo-7037b.firebaseio.com",
+    "project_id": "nemo-7037b",
+    "storage_bucket": "nemo-7037b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093834300985:android:2e1f1f554d0dccceebf7e8",
+        "android_client_info": {
+          "package_name": "com.salvadorsp.nemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093834300985-07buit528kdhqj1ctr89288tmqt3o8el.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHBbvthNEMTZiwZwhJGmkeNXWhDRVLIj4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1093834300985-07buit528kdhqj1ctr89288tmqt3o8el.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
