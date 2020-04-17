@@ -192,10 +192,7 @@
                         android:id="@+id/lightswitch"
                         android:layout_marginTop="30dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                    </Button>
-
+                        android:layout_height="wrap_content"/>
 
 
                 </LinearLayout>
@@ -204,13 +201,40 @@
 
         </GridLayout>
 
-        <Button
-            android:id="@+id/historybutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="see history"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:textAllCaps="false" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_margin="12dp"
+                android:id="@+id/savebutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="save stats"
+                android:layout_gravity="center"
+                android:textAllCaps="false" />
+            <Button
+                android:layout_margin="12dp"
+                android:id="@+id/historybutton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="see history"
+                android:layout_gravity="center"
+                android:textAllCaps="false" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_margin="12dp"
+            android:text="buttonCount"
+            android:id="@+id/buttoncount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
 
     </LinearLayout>
 

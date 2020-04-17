@@ -20,11 +20,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    TextView temperature, pH, turbidity, light;
-    Button lightswitch, history;
-    Integer lightstatus;
+    TextView temperature, pH, turbidity, light, buttoncount;
+    Button lightswitch, history, savestats;
+    Integer lightstatus, statscount;
     String tempstatus, phstatus, turbstatus;
 
     DatabaseReference dref;
@@ -40,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
         light=(TextView) findViewById(R.id.lightstatus);
         lightswitch=(Button) findViewById(R.id.lightswitch);
         history=(Button) findViewById(R.id.historybutton);
+        savestats=(Button) findViewById(R.id.savebutton);
+        buttoncount=(TextView) findViewById(R.id.buttoncount);
+
 
         dref=FirebaseDatabase.getInstance().getReference();
         dref.addValueEventListener(new ValueEventListener() {
@@ -62,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
                     light.setText("Light is off");
                     lightswitch.setText("TURN ON");
                 }
+
+                statscount=dataSnapshot.child("statscount").getValue(Integer.class);
+                buttoncount.setText(Integer.toString(statscount));  //for debug onli, use value for graph's x axis
+
             }
 
             @Override
@@ -69,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
 
         lightswitch.setOnClickListener(new View.OnClickListener(){
 
@@ -86,6 +96,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        savestats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef = database.getReference("statscount");
+                myRef.setValue(statscount+1);
+                Toast.makeText(MainActivity.this, "Successfully saved current stats! See history for more.", Toast.LENGTH_LONG).show();
+
+            }
+        });
+
 
         history.setOnClickListener(new View.OnClickListener() {
             @Override
