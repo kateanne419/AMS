@@ -59,12 +59,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-                <ImageView
-                    android:scaleType="fitXY"
-                    android:layout_margin="12dp"
-                    android:src="@drawable/graphtemp"
+                <lecho.lib.hellocharts.view.LineChartView
+                    android:layout_margin="8dp"
+                    android:id="@+id/tempchart"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 

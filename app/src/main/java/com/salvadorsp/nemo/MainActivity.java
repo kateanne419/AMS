@@ -3,6 +3,8 @@ package com.salvadorsp.nemo;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
@@ -22,11 +24,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     TextView temperature, pH, turbidity, light, buttoncount;
     Button lightswitch, history, savestats;
     Integer lightstatus, statscount;
-    String tempstatus, phstatus, turbstatus;
+    Double tempstatus, phstatus, turbstatus;
+    List<Double> tempValues;
 
     DatabaseReference dref;
 
@@ -34,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        tempValues = new ArrayList<>();
+
 
         temperature=(TextView) findViewById(R.id.temperatureval);
         pH=(TextView) findViewById(R.id.phval);
@@ -49,14 +57,14 @@ public class MainActivity extends AppCompatActivity {
         dref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                tempstatus=dataSnapshot.child("temperature").getValue().toString();
-                temperature.setText(tempstatus);
+                tempstatus=dataSnapshot.child("temperature").getValue(Double.class);
+                temperature.setText(Double.toString(tempstatus));
 
-                phstatus=dataSnapshot.child("pH").getValue().toString();
-                pH.setText(phstatus);
+                phstatus=dataSnapshot.child("pH").getValue(Double.class);
+                pH.setText(Double.toString(phstatus));
 
-                turbstatus=dataSnapshot.child("turbidity").getValue().toString();
-                turbidity.setText(turbstatus);
+                turbstatus=dataSnapshot.child("turbidity").getValue(Double.class);
+                turbidity.setText(Double.toString(turbstatus));
 
                 lightstatus=dataSnapshot.child("light").getValue(Integer.class);
                 if(lightstatus==1){
@@ -68,8 +76,13 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 statscount=dataSnapshot.child("statscount").getValue(Integer.class);
-                buttoncount.setText(Integer.toString(statscount));  //for debug onli, use value for graph's x axis
+                buttoncount.setText(Integer.toString(statscount));  //TODO delete after. for debug onli, real @ datahistoryjava
 
+//                for(DataSnapshot dss:dataSnapshot.getChildren()){
+//                    tempRef=dss.getValue(Double.class);
+//                    tempValues.add(tempRef);
+//                }
+                    //TODO retrieve array. put to tempValues matic ba magaappend pag may child na napush?
             }
 
             @Override
@@ -102,9 +115,26 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("statscount");
+                DatabaseReference tempRef = database.getReference().child("tempvalues");
+                DatabaseReference turbRef = database.getReference().child("turbvalues");
+                DatabaseReference phRef = database.getReference().child("phvalues");
+                DatabaseReference xAxisRef = database.getReference().child("xaxis");
                 myRef.setValue(statscount+1);
-                Toast.makeText(MainActivity.this, "Successfully saved current stats! See history for more.", Toast.LENGTH_LONG).show();
+                xAxisRef.push().setValue(statscount+1);
+                turbRef.push().setValue(turbstatus);
+                phRef.push().setValue(phstatus);
+                tempRef.push().setValue(tempstatus)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    Toast.makeText(MainActivity.this, "Successfully saved current stats! See history for more.", Toast.LENGTH_LONG).show();
 
+                                }else{
+                                    Toast.makeText(MainActivity.this, "Failed to save current stats.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
             }
         });
 
