@@ -7,6 +7,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -31,16 +33,16 @@ public class MainActivity extends AppCompatActivity {
     TextView temperature, pH, turbidity, light, buttoncount;
     Button lightswitch, history, savestats;
     Integer lightstatus, statscount;
-    Double tempstatus, phstatus, turbstatus;
-    List<Double> tempValues;
+    Double tempstatus, phstatus, turbstatus, tempValRef;
 
-    DatabaseReference dref;
+
+    DatabaseReference dRef, tempDbRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        tempValues = new ArrayList<>();
+
 
 
         temperature=(TextView) findViewById(R.id.temperatureval);
@@ -53,8 +55,9 @@ public class MainActivity extends AppCompatActivity {
         buttoncount=(TextView) findViewById(R.id.buttoncount);
 
 
-        dref=FirebaseDatabase.getInstance().getReference();
-        dref.addValueEventListener(new ValueEventListener() {
+        dRef=FirebaseDatabase.getInstance().getReference();
+        tempDbRef=FirebaseDatabase.getInstance().getReference().child("tempvalues"); //TODO remove after debug
+        dRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 tempstatus=dataSnapshot.child("temperature").getValue(Double.class);
@@ -78,11 +81,7 @@ public class MainActivity extends AppCompatActivity {
                 statscount=dataSnapshot.child("statscount").getValue(Integer.class);
                 buttoncount.setText(Integer.toString(statscount));  //TODO delete after. for debug onli, real @ datahistoryjava
 
-//                for(DataSnapshot dss:dataSnapshot.getChildren()){
-//                    tempRef=dss.getValue(Double.class);
-//                    tempValues.add(tempRef);
-//                }
-                    //TODO retrieve array. put to tempValues matic ba magaappend pag may child na napush?
+
             }
 
             @Override
@@ -91,7 +90,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+//        tempDbRef.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//
+//                    StringBuilder stringBuilder = new StringBuilder();
+//                    for(int i=0;i<tempValues.size();i++){
+//                        stringBuilder.append(tempValues.get(i)+",");
+//                    }
+//                    Toast.makeText(getApplicationContext(), stringBuilder.toString(),Toast.LENGTH_LONG).show(); //TODO delete after. for debug onli
+//
+//
+//            }
+//
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         lightswitch.setOnClickListener(new View.OnClickListener(){
 
