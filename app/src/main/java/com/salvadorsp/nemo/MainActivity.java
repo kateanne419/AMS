@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     Double tempstatus, phstatus, turbstatus;
     int tempgaugeval, phgaugeval, turbgaugeval;
     CustomGauge tempGauge, phGauge, turbGauge;
-    private static int SPLASH_TIME_OUT=4000;
+
 
 
     DatabaseReference dRef, tempDbRef;
