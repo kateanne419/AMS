@@ -61,27 +61,63 @@
                     android:orientation="vertical"
                     android:padding="16dp"
                     android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_width="wrap_content"
+                    android:layout_height="210dp">
+
+                    <RelativeLayout
+                        android:layout_width="128dp"
+                        android:layout_height="128dp">
+
+                        <pl.pawelkleczkowski.customgauge.CustomGauge
+                            android:id="@+id/tempgauge"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:gaugeStartAngle="135"
+                            app:gaugeSweepAngle="270"
+                            app:gaugeStartValue="0"
+                            app:gaugeEndValue="40"
+                            app:gaugePointEndColor="#1038BD"
+                            app:gaugePointStartColor="#5AC2F1"
+                            app:gaugeStrokeCap="ROUND"
+                            app:gaugeStrokeColor="#D6D6D6"
+                            app:gaugeStrokeWidth="12dp" />
+                        <TextView
+                            android:id="@+id/temperatureval"
+                            android:layout_centerHorizontal="true"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:textStyle="bold"
+                            android:textSize="42sp"
+                            android:gravity="center"
+                            android:text="00"
+                            android:layout_centerVertical="true"/>
+                        <TextView
+                            android:id="@+id/tempstartend"
+                            android:textSize="8sp"
+                            android:text="00                               40"
+                            android:layout_centerHorizontal="true"
+                            android:layout_below="@id/temperatureval"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:id="@+id/tempunit"
+                            android:textSize="20sp"
+                            android:text="°C"
+                            android:layout_centerHorizontal="true"
+                            android:layout_below="@id/tempstartend"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </RelativeLayout>
 
                     <TextView
-                        android:width="123dp"
-                        android:height="123dp"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/temperatureval"
-                        android:textStyle="bold"
-                        android:textSize="40sp"
-                        android:text="Getting data..." />
-                    <TextView
-                        android:layout_marginTop="12dp"
+                        android:layout_marginTop="5dp"
                         android:textColor="#6f6f6f"
                         android:textSize="18sp"
                         android:text="Temperature"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-
-
 
                 </LinearLayout>
 
@@ -103,15 +139,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
-                        android:width="123dp"
-                        android:height="123dp"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/phval"
-                        android:textStyle="bold"
-                        android:textSize="40sp"
-                        android:text="Getting data..." />
+                    <RelativeLayout
+                        android:layout_width="128dp"
+                        android:layout_height="128dp">
+
+                        <pl.pawelkleczkowski.customgauge.CustomGauge
+                            android:id="@+id/phgauge"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:gaugeStartAngle="135"
+                            app:gaugeSweepAngle="270"
+                            app:gaugeStartValue="0"
+                            app:gaugeEndValue="14"
+                            app:gaugePointEndColor="#1038BD"
+                            app:gaugePointStartColor="#5AC2F1"
+                            app:gaugeStrokeCap="ROUND"
+                            app:gaugeStrokeColor="#D6D6D6"
+                            app:gaugeStrokeWidth="12dp" />
+                        <TextView
+                            android:id="@+id/phval"
+                            android:layout_centerHorizontal="true"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:textStyle="bold"
+                            android:textSize="42sp"
+                            android:gravity="center"
+                            android:text="00"
+                            android:layout_centerVertical="true"/>
+                        <TextView
+                            android:id="@+id/phstartend"
+                            android:textSize="8sp"
+                            android:text="00                               14"
+                            android:layout_centerHorizontal="true"
+                            android:layout_below="@id/phval"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </RelativeLayout>
                     <TextView
                         android:layout_marginTop="12dp"
                         android:textColor="#6f6f6f"
@@ -119,9 +184,6 @@
                         android:text="pH"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-
-
-
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -142,15 +204,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
-                        android:width="123dp"
-                        android:height="123dp"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:id="@+id/turbidityval"
-                        android:textStyle="bold"
-                        android:textSize="40sp"
-                        android:text="Getting data..." />
+                    <RelativeLayout
+                        android:layout_width="128dp"
+                        android:layout_height="128dp">
+
+                        <pl.pawelkleczkowski.customgauge.CustomGauge
+                            android:id="@+id/turbgauge"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:gaugeStartAngle="135"
+                            app:gaugeSweepAngle="270"
+                            app:gaugeStartValue="0"
+                            app:gaugeEndValue="50"
+                            app:gaugePointEndColor="#1038BD"
+                            app:gaugePointStartColor="#5AC2F1"
+                            app:gaugeStrokeCap="ROUND"
+                            app:gaugeStrokeColor="#D6D6D6"
+                            app:gaugeStrokeWidth="12dp" />
+                        <TextView
+                            android:id="@+id/turbidityval"
+                            android:layout_centerHorizontal="true"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:textStyle="bold"
+                            android:textSize="42sp"
+                            android:gravity="center"
+                            android:text="00"
+                            android:layout_centerVertical="true"/>
+                        <TextView
+                            android:id="@+id/turbstartend"
+                            android:textSize="8sp"
+                            android:text="00                               50"
+                            android:layout_centerHorizontal="true"
+                            android:layout_below="@id/turbidityval"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </RelativeLayout>
                     <TextView
                         android:layout_marginTop="12dp"
                         android:textColor="#6f6f6f"
@@ -180,6 +271,7 @@
                     android:layout_height="match_parent">
 
                     <TextView
+                        android:gravity="center"
                         android:width="123dp"
                         android:height="70dp"
                         android:layout_height="wrap_content"
@@ -187,7 +279,7 @@
                         android:id="@+id/lightstatus"
                         android:textStyle="bold"
                         android:textSize="35sp"
-                        android:text="Getting data..."/>
+                        android:text="Light is"/>
                     <Button
                         android:id="@+id/lightswitch"
                         android:layout_marginTop="30dp"

@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,11 +30,17 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import in.unicodelabs.kdgaugeview.KdGaugeView;
+import pl.pawelkleczkowski.customgauge.CustomGauge;
+
 public class MainActivity extends AppCompatActivity {
     TextView temperature, pH, turbidity, light, buttoncount;
     Button lightswitch, history, savestats;
     Integer lightstatus, statscount;
-    Double tempstatus, phstatus, turbstatus, tempValRef;
+    Double tempstatus, phstatus, turbstatus;
+    int tempgaugeval, phgaugeval, turbgaugeval;
+    CustomGauge tempGauge, phGauge, turbGauge;
+    private static int SPLASH_TIME_OUT=4000;
 
 
     DatabaseReference dRef, tempDbRef;
@@ -43,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
         temperature=(TextView) findViewById(R.id.temperatureval);
         pH=(TextView) findViewById(R.id.phval);
         turbidity=(TextView) findViewById(R.id.turbidityval);
@@ -53,7 +58,9 @@ public class MainActivity extends AppCompatActivity {
         history=(Button) findViewById(R.id.historybutton);
         savestats=(Button) findViewById(R.id.savebutton);
         buttoncount=(TextView) findViewById(R.id.buttoncount);
-
+        tempGauge=findViewById(R.id.tempgauge);
+        phGauge=findViewById(R.id.phgauge);
+        turbGauge=findViewById(R.id.turbgauge);
 
         dRef=FirebaseDatabase.getInstance().getReference();
         tempDbRef=FirebaseDatabase.getInstance().getReference().child("tempvalues"); //TODO remove after debug
@@ -61,13 +68,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 tempstatus=dataSnapshot.child("temperature").getValue(Double.class);
+                tempgaugeval=dataSnapshot.child("temperature").getValue(int.class);
                 temperature.setText(Double.toString(tempstatus));
+                tempGauge.setValue(tempgaugeval);
 
                 phstatus=dataSnapshot.child("pH").getValue(Double.class);
+                phgaugeval=dataSnapshot.child("pH").getValue(int.class);
                 pH.setText(Double.toString(phstatus));
+                phGauge.setValue(phgaugeval);
 
                 turbstatus=dataSnapshot.child("turbidity").getValue(Double.class);
+                turbgaugeval=dataSnapshot.child("turbidity").getValue(int.class);
                 turbidity.setText(Double.toString(turbstatus));
+                turbGauge.setValue(turbgaugeval);
 
                 lightstatus=dataSnapshot.child("light").getValue(Integer.class);
                 if(lightstatus==1){
@@ -89,42 +102,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-//        tempDbRef.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//
-//                    StringBuilder stringBuilder = new StringBuilder();
-//                    for(int i=0;i<tempValues.size();i++){
-//                        stringBuilder.append(tempValues.get(i)+",");
-//                    }
-//                    Toast.makeText(getApplicationContext(), stringBuilder.toString(),Toast.LENGTH_LONG).show(); //TODO delete after. for debug onli
-//
-//
-//            }
-//
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
 
         lightswitch.setOnClickListener(new View.OnClickListener(){
 
