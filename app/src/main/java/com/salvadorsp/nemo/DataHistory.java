@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,11 +35,15 @@ public class DataHistory extends AppCompatActivity {
     TextView buttoncount;
     double tempValRef, phValRef, turbValRef;
     int xValRef;
+    String dateValRef;
     List<Double> tempValues = new ArrayList<>();
     List<Double> phValues = new ArrayList<>();
     List<Double> turbValues = new ArrayList<>();
     List<Integer> xValues = new ArrayList<>();
+    List<String> labelDate = new ArrayList<>();
     LineChartView lineChartView, lineChartView2, lineChartView3;
+
+
     DatabaseReference dref;
 
     @Override
@@ -53,7 +56,6 @@ public class DataHistory extends AppCompatActivity {
         lineChartView = findViewById(R.id.tempchart);
         lineChartView2 = findViewById(R.id.phchart);
         lineChartView3 = findViewById(R.id.turbchart);
-
 
         dref=FirebaseDatabase.getInstance().getReference();
         dref.addValueEventListener(new ValueEventListener() {
@@ -78,24 +80,28 @@ public class DataHistory extends AppCompatActivity {
                         turbValRef = dss.getValue(double.class);
                         turbValues.add(turbValRef);
                     }
-
                     xValues.clear();
                     for (DataSnapshot dss : dataSnapshot.child("xaxis").getChildren()) {
                         xValRef = dss.getValue(int.class);
                         xValues.add(xValRef);
                     }
+                    labelDate.clear();
+                    for(DataSnapshot dss : dataSnapshot.child("labeldate").getChildren()){
+                        dateValRef=dss.getValue(String.class);
+                        labelDate.add(dateValRef);
+                    }
 
                 }
                 //------CHART 1
                 double[] yAxisData = new double[tempValues.size()];
-                int[] axisData = new int[xValues.size()];
+                String[] axisData = new String[labelDate.size()];
 
                 for(int i=0;i<tempValues.size();i++){
                     yAxisData[i]=tempValues.get(i);
                 }
 
-                for(int i=0;i<xValues.size();i++){
-                    axisData[i]=xValues.get(i);
+                for(int i=0;i<labelDate.size();i++){
+                    axisData[i]=labelDate.get(i);
                 }
 
                 List yAxisValues = new ArrayList();
@@ -104,7 +110,7 @@ public class DataHistory extends AppCompatActivity {
                 Line line = new Line(yAxisValues).setColor(Color.parseColor("#9C27B0"));
 
                 for(int i = 0; i < axisData.length; i++){
-                    axisValues.add(i, new AxisValue(i).setLabel(String.valueOf(axisData[i])));
+                    axisValues.add(i, new AxisValue(i).setLabel(axisData[i]));
                 }
 
                 for (int i = 0; i < yAxisData.length; i++){
@@ -127,14 +133,14 @@ public class DataHistory extends AppCompatActivity {
                 lineChartView.setLineChartData(data);
                 //------CHART 2
                 double[] yAxisData2 = new double[phValues.size()];
-                int[] axisData2 = new int[xValues.size()];
+                String[] axisData2 = new String[labelDate.size()];
 
                 for(int i=0;i<phValues.size();i++){
                     yAxisData2[i]=phValues.get(i);
                 }
 
-                for(int i=0;i<xValues.size();i++){
-                    axisData2[i]=xValues.get(i);
+                for(int i=0;i<labelDate.size();i++){
+                    axisData2[i]=labelDate.get(i);
                 }
 
                 List yAxisValues2 = new ArrayList();
@@ -143,7 +149,7 @@ public class DataHistory extends AppCompatActivity {
                 Line line2 = new Line(yAxisValues2).setColor(Color.parseColor("#9C27B0"));
 
                 for(int i = 0; i < axisData2.length; i++){
-                    axisValues2.add(i, new AxisValue(i).setLabel(String.valueOf(axisData2[i])));
+                    axisValues2.add(i, new AxisValue(i).setLabel(axisData2[i]));
                 }
 
                 for (int i = 0; i < yAxisData2.length; i++){
@@ -166,14 +172,14 @@ public class DataHistory extends AppCompatActivity {
                 lineChartView2.setLineChartData(data2);
                 //------CHART 3
                 double[] yAxisData3 = new double[turbValues.size()];
-                int[] axisData3 = new int[xValues.size()];
+                String[] axisData3 = new String[labelDate.size()];
 
                 for(int i=0;i<turbValues.size();i++){
                     yAxisData3[i]=turbValues.get(i);
                 }
 
-                for(int i=0;i<xValues.size();i++){
-                    axisData3[i]=xValues.get(i);
+                for(int i=0;i<labelDate.size();i++){
+                    axisData3[i]=labelDate.get(i);
                 }
 
                 List yAxisValues3 = new ArrayList();
@@ -182,7 +188,7 @@ public class DataHistory extends AppCompatActivity {
                 Line line3 = new Line(yAxisValues3).setColor(Color.parseColor("#9C27B0"));
 
                 for(int i = 0; i < axisData3.length; i++){
-                    axisValues3.add(i, new AxisValue(i).setLabel(String.valueOf(axisData3[i])));
+                    axisValues3.add(i, new AxisValue(i).setLabel(axisData3[i]));
                 }
 
                 for (int i = 0; i < yAxisData3.length; i++){

@@ -5,9 +5,6 @@ import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,11 +12,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.os.Handler;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,19 +21,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-import in.unicodelabs.kdgaugeview.KdGaugeView;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 public class MainActivity extends AppCompatActivity {
-    TextView temperature, pH, turbidity, light, buttoncount;
+    TextView temperature, pH, turbidity, light;
     Button lightswitch, history, savestats;
     Integer lightstatus, statscount;
     Double tempstatus, phstatus, turbstatus;
     int tempgaugeval, phgaugeval, turbgaugeval;
     CustomGauge tempGauge, phGauge, turbGauge;
+    DateFormat df = new SimpleDateFormat("MMM d K:mm");
+    String date = df.format(Calendar.getInstance().getTime());
 
 
 
@@ -50,17 +46,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        temperature=(TextView) findViewById(R.id.temperatureval);
-        pH=(TextView) findViewById(R.id.phval);
-        turbidity=(TextView) findViewById(R.id.turbidityval);
-        light=(TextView) findViewById(R.id.lightstatus);
-        lightswitch=(Button) findViewById(R.id.lightswitch);
-        history=(Button) findViewById(R.id.historybutton);
-        savestats=(Button) findViewById(R.id.savebutton);
-        buttoncount=(TextView) findViewById(R.id.buttoncount);
-        tempGauge=findViewById(R.id.tempgauge);
-        phGauge=findViewById(R.id.phgauge);
-        turbGauge=findViewById(R.id.turbgauge);
+        temperature = findViewById(R.id.temperatureval);
+        pH = findViewById(R.id.phval);
+        turbidity = findViewById(R.id.turbidityval);
+        light = findViewById(R.id.lightstatus);
+        lightswitch = findViewById(R.id.lightswitch);
+        history = findViewById(R.id.historybutton);
+        savestats = findViewById(R.id.savebutton);
+        tempGauge = findViewById(R.id.tempgauge);
+        phGauge = findViewById(R.id.phgauge);
+        turbGauge = findViewById(R.id.turbgauge);
 
         dRef=FirebaseDatabase.getInstance().getReference();
         tempDbRef=FirebaseDatabase.getInstance().getReference().child("tempvalues"); //TODO remove after debug
@@ -92,9 +87,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 statscount=dataSnapshot.child("statscount").getValue(Integer.class);
-                buttoncount.setText(Integer.toString(statscount));  //TODO delete after. for debug onli, real @ datahistoryjava
-
-
             }
 
             @Override
@@ -129,7 +121,10 @@ public class MainActivity extends AppCompatActivity {
                 DatabaseReference turbRef = database.getReference().child("turbvalues");
                 DatabaseReference phRef = database.getReference().child("phvalues");
                 DatabaseReference xAxisRef = database.getReference().child("xaxis");
+                DatabaseReference labelRef = database.getReference().child("labeldate");
+
                 myRef.setValue(statscount+1);
+                labelRef.push().setValue(date);
                 xAxisRef.push().setValue(statscount+1);
                 turbRef.push().setValue(turbstatus);
                 phRef.push().setValue(phstatus);
