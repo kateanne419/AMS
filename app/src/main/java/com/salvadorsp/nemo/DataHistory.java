@@ -32,7 +32,6 @@ import lecho.lib.hellocharts.view.LineChartView;
 public class DataHistory extends AppCompatActivity {
     Button resetstats;
     Integer statscount;
-    TextView buttoncount;
     double tempValRef, phValRef, turbValRef;
     int xValRef;
     String dateValRef;
@@ -42,8 +41,6 @@ public class DataHistory extends AppCompatActivity {
     List<Integer> xValues = new ArrayList<>();
     List<String> labelDate = new ArrayList<>();
     LineChartView lineChartView, lineChartView2, lineChartView3;
-
-
     DatabaseReference dref;
 
     @Override
@@ -51,8 +48,7 @@ public class DataHistory extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_history);
 
-        resetstats=(Button) findViewById(R.id.resetbutton);
-        buttoncount=(TextView) findViewById(R.id.buttoncount2);
+        resetstats= findViewById(R.id.resetbutton);
         lineChartView = findViewById(R.id.tempchart);
         lineChartView2 = findViewById(R.id.phchart);
         lineChartView3 = findViewById(R.id.turbchart);
@@ -62,7 +58,6 @@ public class DataHistory extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 statscount=dataSnapshot.child("statscount").getValue(Integer.class);
-                buttoncount.setText(Integer.toString(statscount));
 
                 if(dataSnapshot.exists()) {
                     tempValues.clear();
@@ -107,7 +102,7 @@ public class DataHistory extends AppCompatActivity {
                 List yAxisValues = new ArrayList();
                 List axisValues = new ArrayList();
 
-                Line line = new Line(yAxisValues).setColor(Color.parseColor("#9C27B0"));
+                Line line = new Line(yAxisValues).setColor(Color.parseColor("#2471A3"));
 
                 for(int i = 0; i < axisData.length; i++){
                     axisValues.add(i, new AxisValue(i).setLabel(axisData[i]));
@@ -146,7 +141,7 @@ public class DataHistory extends AppCompatActivity {
                 List yAxisValues2 = new ArrayList();
                 List axisValues2 = new ArrayList();
 
-                Line line2 = new Line(yAxisValues2).setColor(Color.parseColor("#9C27B0"));
+                Line line2 = new Line(yAxisValues2).setColor(Color.parseColor("#2471A3"));
 
                 for(int i = 0; i < axisData2.length; i++){
                     axisValues2.add(i, new AxisValue(i).setLabel(axisData2[i]));
@@ -185,7 +180,7 @@ public class DataHistory extends AppCompatActivity {
                 List yAxisValues3 = new ArrayList();
                 List axisValues3 = new ArrayList();
 
-                Line line3 = new Line(yAxisValues3).setColor(Color.parseColor("#9C27B0"));
+                Line line3 = new Line(yAxisValues3).setColor(Color.parseColor("#2471A3"));
 
                 for(int i = 0; i < axisData3.length; i++){
                     axisValues3.add(i, new AxisValue(i).setLabel(axisData3[i]));
@@ -217,6 +212,7 @@ public class DataHistory extends AppCompatActivity {
             }
         });
 
+            //reset stats
         resetstats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -226,6 +222,8 @@ public class DataHistory extends AppCompatActivity {
                 DatabaseReference turbRef = database.getReference().child("turbvalues");
                 DatabaseReference phRef = database.getReference().child("phvalues");
                 DatabaseReference xAxisRef = database.getReference().child("xaxis");
+                DatabaseReference labelRef = database.getReference().child("labeldate");
+                labelRef.removeValue();
                 tempRef.removeValue();
                 turbRef.removeValue();
                 phRef.removeValue();
