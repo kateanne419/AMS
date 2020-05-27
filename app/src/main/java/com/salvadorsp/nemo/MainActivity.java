@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     int tempgaugeval, phgaugeval, turbgaugeval;
     CustomGauge tempGauge, phGauge, turbGauge;
     DateFormat df = new SimpleDateFormat("MMM d K:mm");
-    String date = df.format(Calendar.getInstance().getTime());
+
 
 
 
@@ -173,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 DatabaseReference phRef = database.getReference().child("phvalues");
                 DatabaseReference xAxisRef = database.getReference().child("xaxis");
                 DatabaseReference labelRef = database.getReference().child("labeldate");
+                String date = df.format(Calendar.getInstance().getTime());
 
                 myRef.setValue(statscount+1);
                 labelRef.push().setValue(date);
