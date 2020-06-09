@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
         dRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                tempstatus=dataSnapshot.child("temperature").getValue(Double.class);
-                tempgaugeval=dataSnapshot.child("temperature").getValue(int.class);
+                tempstatus=dataSnapshot.child("sensorvalues/temperature").getValue(Double.class);
+                tempgaugeval=dataSnapshot.child("sensorvalues/temperature").getValue(int.class);
                 temperature.setText(Double.toString(tempstatus));
                 tempGauge.setValue(tempgaugeval);
                 if(tempstatus>=22.22 && tempstatus<=27.77){
@@ -80,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
                     tempnotification();
                 }
 
-                phstatus=dataSnapshot.child("pH").getValue(Double.class);
-                phgaugeval=dataSnapshot.child("pH").getValue(int.class);
+                phstatus=dataSnapshot.child("sensorvalues/pH").getValue(Double.class);
+                phgaugeval=dataSnapshot.child("sensorvalues/pH").getValue(int.class);
                 pH.setText(Double.toString(phstatus));
                 phGauge.setValue(phgaugeval);
                 if(phstatus>=6.5 && phstatus<=7.5){
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity {
                     phnotification();
                 }
 
-                turbstatus=dataSnapshot.child("turbidity").getValue(Double.class);
-                turbgaugeval=dataSnapshot.child("turbidity").getValue(int.class);
+                turbstatus=dataSnapshot.child("sensorvalues/turbidity").getValue(Double.class);
+                turbgaugeval=dataSnapshot.child("sensorvalues/turbidity").getValue(int.class);
                 turbidity.setText(Double.toString(turbstatus));
                 turbGauge.setValue(turbgaugeval);
                 if(turbstatus<=7.9){
