@@ -2,13 +2,14 @@ package com.salvadorsp.nemo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class LogIn extends AppCompatActivity {
+public class UserLogIn extends AppCompatActivity {
     Button loginbtn;
     EditText user, pass;
 
@@ -25,16 +26,27 @@ public class LogIn extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(user.getText().toString().equals("admin") && pass.getText().toString().equals("admin")) {
-                    Toast.makeText(LogIn.this, "Signing in as admin...", Toast.LENGTH_SHORT).show();
-                    //TODO redirect to main activity with everything enabled
-                    //"Welcome, admin"
+                    Toast.makeText(UserLogIn.this, "Signing in as admin...", Toast.LENGTH_SHORT).show();
+                    loginAsAdmin();
                 }else if(user.getText().toString().equals("user") && pass.getText().toString().equals("user")){
-                    Toast.makeText(LogIn.this, "Signing in as user...", Toast.LENGTH_SHORT).show();
-                    //TODO redirect to main activity with buttons disabled
+                    Toast.makeText(UserLogIn.this, "Signing in as user...", Toast.LENGTH_SHORT).show();
+                    loginAsUser();
                 }else{
-                    Toast.makeText(LogIn.this, "Invalid username or password.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserLogIn.this, "Invalid username or password.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+    }
+
+    public void loginAsAdmin(){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("usertype", "admin");
+        startActivity(intent);
+    }
+
+    public void loginAsUser(){
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("usertype", "user");
+        startActivity(intent);
     }
 }

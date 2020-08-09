@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    tools:context=".LogIn">
+    tools:context=".UserLogIn">
 
     <TextView android:text = "Aquarium Management System"
         android:layout_width="wrap_content"
@@ -16,7 +16,7 @@
         android:layout_alignParentTop = "true"
         android:layout_centerHorizontal="true"
         android:paddingTop="50dp"
-        android:paddingBottom="50dp"/>
+        android:paddingBottom="30dp"/>
 
     <TextView
         android:layout_width = "wrap_content"
@@ -26,14 +26,13 @@
         android:layout_below = "@id/apptitle"
         android:layout_centerHorizontal = "true"
         android:textSize="20sp"
-        android:textColor="#FFFFFF"
-        android:paddingBottom="30dp"/>
+        android:textColor="#FFFFFF" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/nemologo"
-        android:src="@drawable/nemo_logo"
+        android:src="@drawable/new_logo"
         android:layout_below="@id/pagetitle"
         android:layout_centerHorizontal="true" />
 

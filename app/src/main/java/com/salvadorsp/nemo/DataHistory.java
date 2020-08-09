@@ -43,6 +43,7 @@ public class DataHistory extends AppCompatActivity {
     LineChartView lineChartView, lineChartView2, lineChartView3;
     DatabaseReference dref;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +53,13 @@ public class DataHistory extends AppCompatActivity {
         lineChartView = findViewById(R.id.tempchart);
         lineChartView2 = findViewById(R.id.phchart);
         lineChartView3 = findViewById(R.id.turbchart);
+        String usertype = getIntent().getStringExtra("usertype");
+
+        if(usertype.equals("admin")){
+            resetstats.setEnabled(true);
+        }else if(usertype.equals("user")){
+            resetstats.setEnabled(false);
+        }
 
         dref=FirebaseDatabase.getInstance().getReference();
         dref.addValueEventListener(new ValueEventListener() {
