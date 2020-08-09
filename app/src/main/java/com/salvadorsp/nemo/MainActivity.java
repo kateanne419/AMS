@@ -34,15 +34,14 @@ import java.util.Calendar;
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 public class MainActivity extends AppCompatActivity {
-    TextView temperature, pH, turbidity, light;
+    TextView temperature, pH, turbidity, light, welcome;
     Button lightswitch, history, savestats;
     Integer lightstatus, statscount;
     Double tempstatus, phstatus, turbstatus;
     int tempgaugeval, phgaugeval, turbgaugeval;
     CustomGauge tempGauge, phGauge, turbGauge;
     DateFormat df = new SimpleDateFormat("MMM d K:mm");
-
-
+    String usertype;
 
 
     DatabaseReference dRef;
@@ -62,6 +61,18 @@ public class MainActivity extends AppCompatActivity {
         tempGauge = findViewById(R.id.tempgauge);
         phGauge = findViewById(R.id.phgauge);
         turbGauge = findViewById(R.id.turbgauge);
+        welcome = findViewById(R.id.username);
+        usertype = getIntent().getStringExtra("usertype");
+
+        if(usertype.equals("admin")){
+            welcome.setText("Admin's Aquarium");
+            lightswitch.setEnabled(true);
+            savestats.setEnabled(true);
+        }else if(usertype.equals("user")){
+            welcome.setText("User's Aquarium");
+            lightswitch.setEnabled(false);
+            savestats.setEnabled(false);
+        }
 
         dRef=FirebaseDatabase.getInstance().getReference();
         dRef.addValueEventListener(new ValueEventListener() {
@@ -204,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void tempnotification(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel = new NotificationChannel("temp","temp", NotificationManager.IMPORTANCE_DEFAULT);
@@ -213,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "temp")
                 .setContentText("Nemo")
-                .setSmallIcon(R.drawable.nemo_logo)
+                .setSmallIcon(R.drawable.new_logo)
                 .setAutoCancel(true)
                 .setContentText("Temperature is at a dangerous level! Check your aquarium now.");
 
@@ -230,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "ph")
                 .setContentText("Nemo")
-                .setSmallIcon(R.drawable.nemo_logo)
+                .setSmallIcon(R.drawable.new_logo)
                 .setAutoCancel(true)
                 .setContentText("pH is at a dangerous level! Check your aquarium now.");
 
@@ -247,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "turb")
                 .setContentText("Nemo")
-                .setSmallIcon(R.drawable.nemo_logo)
+                .setSmallIcon(R.drawable.new_logo)
                 .setAutoCancel(true)
                 .setContentText("Turbidity is at a dangerous level! Check your aquarium now.");
 
@@ -257,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openDataHistory(){
         Intent intent = new Intent(this, DataHistory.class);
+        intent.putExtra("usertype", usertype);
         startActivity(intent);
     }
 
