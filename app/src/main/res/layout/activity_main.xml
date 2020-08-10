@@ -324,6 +324,29 @@
                 android:text="See history"
                 android:layout_gravity="center"
                 android:textAllCaps="false" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_margin="12dp"
+                android:id="@+id/autolight"
+                android:layout_width="137dp"
+                android:layout_height="50dp"
+                android:text="Auto-turn off lights"
+                android:layout_gravity="center"
+                android:textAllCaps="false" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/autotime"/>
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/currtime"/>
 
         </LinearLayout>
 

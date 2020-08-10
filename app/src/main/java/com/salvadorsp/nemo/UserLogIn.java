@@ -22,6 +22,7 @@ public class UserLogIn extends AppCompatActivity {
         user = findViewById(R.id.enteruser);
         pass = findViewById(R.id.enterpass);
 
+        //checking of login credentials
         loginbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

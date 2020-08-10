@@ -55,17 +55,17 @@ public class DataHistory extends AppCompatActivity {
         lineChartView3 = findViewById(R.id.turbchart);
         String usertype = getIntent().getStringExtra("usertype");
 
-        if(usertype.equals("admin")){
+        if(usertype.equals("admin")){               //mock values for local user types to define permissions
             resetstats.setEnabled(true);
         }else if(usertype.equals("user")){
             resetstats.setEnabled(false);
         }
 
-        dref=FirebaseDatabase.getInstance().getReference();
+        dref=FirebaseDatabase.getInstance().getReference();                             //access the realtime database
         dref.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                statscount=dataSnapshot.child("statscount").getValue(Integer.class);
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {              //runs everytime a user saves the current stats
+                statscount=dataSnapshot.child("statscount").getValue(Integer.class);    //puts the values into an array by getting all the children of the corresponding node
 
                 if(dataSnapshot.exists()) {
                     tempValues.clear();
@@ -95,7 +95,8 @@ public class DataHistory extends AppCompatActivity {
                     }
 
                 }
-                //------CHART 1
+                //CHART FOR TEMPERATURE
+                //the arrays are used for displaying the charts
                 double[] yAxisData = new double[tempValues.size()];
                 String[] axisData = new String[labelDate.size()];
 
@@ -134,7 +135,7 @@ public class DataHistory extends AppCompatActivity {
                 data.setAxisYLeft(yAxis);
 
                 lineChartView.setLineChartData(data);
-                //------CHART 2
+                //CHART FOR PH
                 double[] yAxisData2 = new double[phValues.size()];
                 String[] axisData2 = new String[labelDate.size()];
 
@@ -173,7 +174,7 @@ public class DataHistory extends AppCompatActivity {
                 data2.setAxisYLeft(yAxis2);
 
                 lineChartView2.setLineChartData(data2);
-                //------CHART 3
+                //CHART FOR TURBIDITY
                 double[] yAxisData3 = new double[turbValues.size()];
                 String[] axisData3 = new String[labelDate.size()];
 
@@ -220,7 +221,7 @@ public class DataHistory extends AppCompatActivity {
             }
         });
 
-            //reset stats
+        //reset stats, clear all, clear array
         resetstats.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,7 +1,10 @@
 package com.salvadorsp.nemo;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -20,27 +23,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import android.os.Handler;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 public class MainActivity extends AppCompatActivity {
-    TextView temperature, pH, turbidity, light, welcome;
-    Button lightswitch, history, savestats;
+    TextView temperature, pH, turbidity, light, welcome, autotime, currtime;
+    Button lightswitch, history, savestats, autolight;
     Integer lightstatus, statscount;
     Double tempstatus, phstatus, turbstatus;
-    int tempgaugeval, phgaugeval, turbgaugeval;
+    int tempgaugeval, phgaugeval, turbgaugeval, tHour, tMinute, cHour, cMinute;
     CustomGauge tempGauge, phGauge, turbGauge;
     DateFormat df = new SimpleDateFormat("MMM d K:mm");
+    DateFormat tf = new SimpleDateFormat("hh:mm aa");
     String usertype;
 
 
@@ -63,7 +71,11 @@ public class MainActivity extends AppCompatActivity {
         turbGauge = findViewById(R.id.turbgauge);
         welcome = findViewById(R.id.username);
         usertype = getIntent().getStringExtra("usertype");
+        autolight = findViewById(R.id.autolight);
+        autotime = findViewById(R.id.autotime);
+        currtime = findViewById(R.id.currtime);
 
+        //mock values for local user types to define permissions
         if(usertype.equals("admin")){
             welcome.setText("Admin's Aquarium");
             lightswitch.setEnabled(true);
@@ -76,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
 
         dRef=FirebaseDatabase.getInstance().getReference();
         dRef.addValueEventListener(new ValueEventListener() {
+            //everytime the arduino sends a new value to firebase, the app retrieves it and displays it
+            //accordingly, depending on the values set and level of danger.
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 tempstatus=dataSnapshot.child("sensorvalues/temperature").getValue(Double.class);
@@ -117,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                     turbnotification();
                 }
 
+                //gets status of light if turned on or off
                 lightstatus=dataSnapshot.child("light").getValue(Integer.class);
                 if(lightstatus==1){
                     light.setText("Light is on");
@@ -135,47 +150,44 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        lightswitch.setOnClickListener(new View.OnClickListener(){
-
+        //Future update, automate the lights
+        autolight.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("light");
-
-                if(lightstatus==1){
-                    myRef.setValue(0)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(MainActivity.this, "Light is turned off.", Toast.LENGTH_SHORT).show();
-
-                                    }else{
-                                        Toast.makeText(MainActivity.this, "Cannot turn off light.", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-
-                }else{
-                    myRef.setValue(1)
-                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(MainActivity.this, "Light is turned on.", Toast.LENGTH_SHORT).show();
-                                        lightswitch.setText("TURN OFF");
-                                    }else{
-                                        Toast.makeText(MainActivity.this, "Cannot turn on light.", Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            });
-
-                }
+            public void onClick(View v) {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(
+                        MainActivity.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                Calendar calendar = Calendar.getInstance();
+                                tHour = hourOfDay;
+                                tMinute = minute;
+                                calendar.set(0, 0, 0, tHour, tMinute);
+                                //autotime.setText(tf.format(calendar.getTime()));
+//                                new Handler().postDelayed(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        automate(tHour, tMinute);
+//                                    }
+//                                }, 10000);
+                            }
+                        }, 12, 0, true
+                );
+                timePickerDialog.updateTime(tHour, tMinute);
+                timePickerDialog.show();
             }
         });
 
-        savestats.setOnClickListener(new View.OnClickListener() {
+
+        lightswitch.setOnClickListener(new View.OnClickListener(){
             @Override
+            public void onClick(View view) {
+                togglelight();
+            }
+        });
+
+        savestats.setOnClickListener(new View.OnClickListener() {           //saves the current values and adds it to an array along with
+            @Override                                                       //the date and time the save is made/clicked
             public void onClick(View v) {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
                 DatabaseReference myRef = database.getReference("statscount");
@@ -207,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        history.setOnClickListener(new View.OnClickListener() {
+        history.setOnClickListener(new View.OnClickListener() {         //opens the history page
             @Override
             public void onClick(View v) {
                 openDataHistory();
@@ -216,6 +228,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void togglelight(){                                          //the "lightswitch" for the led
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("light");
+
+        //set value of light on firebase to 1 or 0 which means on and off respectively
+        if(lightstatus==1){
+            myRef.setValue(0)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(MainActivity.this, "Light is turned off.", Toast.LENGTH_SHORT).show();
+
+                            }else{
+                                Toast.makeText(MainActivity.this, "Cannot turn off light.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
+        }else{
+            myRef.setValue(1)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(MainActivity.this, "Light is turned on.", Toast.LENGTH_SHORT).show();
+                                lightswitch.setText("TURN OFF");
+                            }else{
+                                Toast.makeText(MainActivity.this, "Cannot turn on light.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+
+        }
+    }
+
+    //notification for extreme temperature values
     private void tempnotification(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel = new NotificationChannel("temp","temp", NotificationManager.IMPORTANCE_DEFAULT);
@@ -233,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
         managerCompat.notify(999,builder.build());
     }
 
+    //notification for extreme ph values
     private void phnotification(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel = new NotificationChannel("ph","ph", NotificationManager.IMPORTANCE_DEFAULT);
@@ -250,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
         managerCompat.notify(999,builder.build());
     }
 
+    //notification for extreme turbidity values
     private void turbnotification(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel = new NotificationChannel("turb","turb", NotificationManager.IMPORTANCE_DEFAULT);
@@ -273,25 +324,29 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    //For future update, light automation
+    public static boolean isAppRunning(final Context context, final String packageName) {
+        final ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        final List<ActivityManager.RunningAppProcessInfo> procInfos = activityManager.getRunningAppProcesses();
+        if (procInfos != null) {
+            for (final ActivityManager.RunningAppProcessInfo processInfo : procInfos) {
+                if (processInfo.processName.equals(packageName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    public void automate(int tHour, int tMinute){
+        while (isAppRunning(MainActivity.this, "com.salvadorsp.nemo")){
+            Calendar calendar1 = Calendar.getInstance();
+            cHour = calendar1.get(Calendar.HOUR_OF_DAY);
+            cMinute = calendar1.get(Calendar.MINUTE);
+            currtime.setText(tf.format(calendar1.getTime()));
+            if((tHour==cHour) && (tMinute==cMinute)){
+                togglelight();
+            }
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }
