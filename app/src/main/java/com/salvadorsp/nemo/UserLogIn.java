@@ -41,7 +41,7 @@ public class UserLogIn extends AppCompatActivity {
 
     public void loginAsAdmin(){
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("usertype", "admin");
+        intent.putExtra("usertype", "admin");   //passes the type of user to the next activity to be opened
         startActivity(intent);
     }
 
